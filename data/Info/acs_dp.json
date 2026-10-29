@@ -1,0 +1,13 @@
+{
+  "name": "acs_dp",
+  "task_type": "binclass",
+  "header": "infer",
+  "column_names": null,
+  "num_col_idx": [],
+  "cat_col_idx": [0, 1, 2, 3, 4],   
+  "target_col_idx": [5],            
+  "file_type": "csv",
+  "data_path": "data/acs_dp/acs_dp.csv",
+  "test_path": null,
+  "val_path": null
+}

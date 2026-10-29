@@ -1,0 +1,55 @@
+# Prototype config for MWEM → TabDiff integration.
+
+pipeline:
+  workdir: pipeline_runs/mwem_tabdiff_demo
+  run_id: demo
+  final_output: synthetic_final.csv
+
+sdnist:
+  dataname: national
+  raw_data_path: data/national/train.csv           # source rows for MWEM
+  info_json: data/national/info.json               # column order, binning, types
+
+mwem:
+  repo_path: "../MWEM+PGM _experiment"               # adjust if cloned elsewhere
+  entrypoint: main.py                               # MWEM CLI; placeholder
+  epsilon: 0.5
+  delta: 1.0e-5
+  workload: topk-1way-2way                          # light workload for speed
+  heavy_hitter_k: 1024
+  iterations: 75
+  synthetic_rows: 10000
+  output:
+    marginals_path: mwem_marginals.json
+    synthetic_path: mwem_seed.csv
+
+tabdiff:
+  repo_path: .                                      # assumes running from TabDiff root
+  dataname: national                                # must match data folder name
+  exp_name: mwem_seed_run
+  gpu: -1                                           # CPU-friendly default
+  deterministic: true
+  data_root: data
+  ckpt_relpath: tabdiff/ckpt/national/mwem_seed_run/ema_model_final.pt
+  python: /Users/laurenlaporta/miniconda3/envs/tabdiff/bin/python  # interpreter with torch installed
+
+  train:
+    epochs: 8                                       # keep short for prototype
+    batch_size: 2048
+    lr: 1.0e-4
+
+  sample:
+    num_samples: 10000
+    batch_size: 2048
+    keep_nan_samples: false
+    apply_marginal_correction: true
+    enable_marginal_correction: true
+    correction_cadence: 5                         # 0=off, 1=every step, 5=every 5 steps, etc.
+    correction_iters: 1
+    correction_step_size: 0.1
+    correction_strength: 1.0
+
+# Notes
+# - This file is referenced by pipelines/mwem_tabdiff_pipeline.py.
+# - Paths are relative to the repository root unless made absolute.
+# - Adjust epsilon/workload to meet privacy budget; all downstream steps are post-processing.

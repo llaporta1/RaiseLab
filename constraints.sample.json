@@ -1,0 +1,25 @@
+{
+    "constraints": [
+        {
+            "columns": ["ZIP_star"],
+            "target_probs": {
+                "12345": 0.10,
+                "67890": 0.20,
+                "OTHER": 0.70
+            }
+        },
+        {
+            "columns": ["ZIP_star", "income_bucket"],
+            "target_probs": {
+                "12345|0": 0.05,
+                "12345|1": 0.05,
+                "67890|0": 0.10,
+                "67890|1": 0.10,
+                "OTHER|0": 0.30,
+                "OTHER|1": 0.40
+            }
+        }
+    ]
+}
+
+36

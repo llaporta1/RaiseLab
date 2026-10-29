@@ -1,0 +1,23 @@
+{
+    "constraints": [
+        {
+            "columns": ["PUMA_STAR"],
+            "target_probs": {
+                "8501": 0.10,
+                "6502": 0.20,
+                "OTHER": 0.70
+            }
+        },
+        {
+            "columns": ["PUMA_STAR", "INCOME_BIN"],
+            "target_probs": {
+                "8501|bin_0": 0.05,
+                "8501|bin_1": 0.05,
+                "6502|bin_0": 0.10,
+                "6502|bin_1": 0.10,
+                "OTHER|bin_0": 0.30,
+                "OTHER|bin_1": 0.40
+            }
+        }
+    ]
+}

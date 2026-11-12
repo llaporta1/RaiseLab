@@ -11,6 +11,9 @@ Private-PGM is the inference component of both methods. “PGM” alone is not a
 fully specified private synthesizer; this comparison uses the MST measurement
 and private tree-selection mechanism as the second baseline.
 
+For cluster setup, exact original-input checks, job submission, monitoring,
+and output interpretation, use the [Rivanna walkthrough](prototype2_rivanna_walkthrough.md).
+
 ## What is needed to run on the research data
 
 GitHub contains source code, not the local research inputs. The baseline run

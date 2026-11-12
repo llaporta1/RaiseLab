@@ -1,0 +1,20 @@
+# Python >=3.11. Keep this environment separate from the torch/Opacus one.
+# Official source pin: 5f97065a17b3e53cfefc7a8ce3e293fd153dd064
+# Clone https://github.com/ryan112358/mbi.git, check out that commit, then run:
+#   python -m pip install -e "$PGM_REPO" -r requirements-pgm.txt
+# The editable install is required: the runner verifies mbi.__file__ against
+# --mbi-repo/src. Do not install a separate latest mbi wheel or a legacy stub.
+# Pin compatible numerical dependencies rather than accepting a newer JAX that
+# drops Python3.11 support. MBI's remaining dependencies resolve normally and
+# every experiment manifest records the resolved direct dependency versions.
+# The pinned MBI source uses jax.tree.static, absent from its declared 0.9.0
+# minimum. 0.10.2 is the newest Python3.11-compatible JAX release.
+jax==0.10.2
+jaxlib==0.10.2
+networkx==3.5
+numpy==2.3.5
+scipy==1.17.0
+pandas==2.2.3
+chex==0.1.92
+optax==0.2.9
+pytest==9.2.0

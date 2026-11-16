@@ -22,11 +22,13 @@ module spider miniforge
 ```
 
 `raiselab` is the allocation used for the earlier experiment. The allocation
-command checks current access/balance. The default launcher module is
-`miniforge/24.11.3-py3.12`, which UVA's published module list includes; confirm
-it appears in the live module query. If an alternative is required, use its
-full module label in `RAISE_PGM_MODULE` for both setup and submission, and
-create an environment explicitly containing Python 3.11 or 3.12.
+command checks current access/balance. Load the currently available default
+with `module load miniforge`; the launcher records the actual loaded module.
+UVA's October 27, 2026 update removed older module versions, so an archived
+version label may no longer load. The setup below creates a separate Conda
+prefix with Python 3.12, independently of the site's base Python version.
+An available full module label can still be selected with `RAISE_PGM_MODULE`.
+Clear or update an override that refers to an unavailable version.
 
 ## 2. Get the follow-up code in a separate checkout
 
@@ -62,24 +64,31 @@ Then run:
 ```bash
 cd "$HOME/projects/raise-pgm-followup/RaiseLab"
 module purge
-module load miniforge/24.11.3-py3.12
+module load miniforge
 module list
-python --version
+conda --version
 unset PYTHONPATH
 export PYTHONNOUSERSITE=1
 
-python -m venv .venv-pgm
+conda create --prefix "$PWD/.venv-pgm" python=3.12 pip
+.venv-pgm/bin/python --version
 git clone https://github.com/ryan112358/mbi.git ../mbi
 git -C ../mbi checkout --detach 5f97065a17b3e53cfefc7a8ce3e293fd153dd064
 .venv-pgm/bin/python -m pip install -e ../mbi -r requirements-pgm.txt
 .venv-pgm/bin/python -m pip check
 ```
 
-The Python version should be 3.12 with this module. The new environment is
-separate from the older PyTorch/Opacus GPU environment. The exact upstream
-source and dependencies are pinned; the adapter checks the import location
-and source commit before fitting. Do not substitute an unrelated `private_pgm`
-package or the old baseline stubs.
+Enter `y` when Conda asks to create the new environment. Its interpreter
+should report Python 3.12; the module's base Python version can differ.
+Use `.venv-pgm/bin/python` directly throughout; this prefix is a Conda
+environment, so do not use the old Python-venv activation command. If the MBI
+clone and pinned checkout already succeeded, resume with the pip installation
+instead of cloning it again.
+
+The new environment is separate from the older PyTorch/Opacus GPU environment.
+The exact upstream source and dependencies are pinned; the adapter checks the
+import location and source commit before fitting. Do not substitute an
+unrelated `private_pgm` package or the old baseline stubs.
 
 ## 4. Verify execution on Rivanna using invented records
 
@@ -274,5 +283,6 @@ in durable research storage.
 - [Current login-node and scratch policies](https://rc.virginia.edu/services/our-policies)
 - [Current partitions](https://rc.virginia.edu/services/compute-and-storage/aftonrivanna)
 - [Published Miniforge module and environment instructions](https://archive.rc.virginia.edu/userinfo/hpc/software/miniforge/)
+- [UVA notice about updates and removal of older modules](https://rc.virginia.edu/news/security-updates-following-emudhra-certificate-incident)
 - [Interactive jobs, allocation commands, and submission rules](https://learning.rc.virginia.edu/notes/slurm-from-cli/section4/)
 - [Job monitoring and completion checks](https://learning.rc.virginia.edu/notes/slurm-from-cli/section3/)

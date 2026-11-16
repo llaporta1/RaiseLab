@@ -56,7 +56,9 @@ done
 
 type module >/dev/null 2>&1 || die "The Rivanna module command is unavailable in this job shell."
 module purge
-module load "${RAISE_PGM_MODULE:-miniforge/24.11.3-py3.12}"
+# The prepared Conda prefix owns Python 3.12; do not depend on a retired
+# version of the site module or on its base Python version.
+module load "${RAISE_PGM_MODULE:-miniforge}"
 module list
 
 PGM_PYTHON="$REPO_ROOT/.venv-pgm/bin/python"

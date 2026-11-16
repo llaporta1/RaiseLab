@@ -5,10 +5,14 @@ on the original 2,048-training / 512-holdout IPUMS pilot. It also produces AGE,
 pairwise, shuffle, and disjoint real-real diagnostics for the generated baseline
 samples. Existing diffusion samples can be supplied separately.
 
-The launcher has been checked locally with shell/control-flow fixtures. It has
-**not yet been submitted to Rivanna**. The earlier local execution of the real
-AIM/MST implementations used invented records and smoke inference settings;
-it established software execution, not IPUMS utility findings.
+The earlier local execution of the real AIM/MST implementations used invented
+records and smoke inference settings. It established software execution, not
+IPUMS utility findings. Use each Rivanna run's logs, completion markers, and
+input provenance to distinguish completed research runs from software checks.
+
+If the baseline comparison and saved-output diagnostics are already complete,
+continue with [the saved-sample AGE and cached-target follow-up](prototype2_saved_followup.md).
+That CPU workflow uses the retained samples and target without repeating fits.
 
 ## 1. Log in and inspect the environment
 

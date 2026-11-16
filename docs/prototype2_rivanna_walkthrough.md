@@ -292,6 +292,51 @@ snapshot does not contain that GPU kit or an automatic export/replay driver.
 The new diagnostic script reads samples; it does not resample checkpoints or
 implement feature-specific guidance interventions.
 
+### Diagnose all saved samples from the completed GPU long run
+
+For the verified v1p1 GPU output format, the dedicated launcher prepares the
+manifest and evaluates the 15 existing arrays (five arms, three draws each).
+It uses the existing `.venv-pgm` environment on a CPU node. Submit it from the
+repository root after pulling this branch:
+
+```bash
+mkdir -p pipeline_runs/slurm
+sbatch --parsable --account=YOUR_ACCOUNT \
+  slurm/prototype2_saved_gpu_diagnostics.sbatch \
+  /absolute/path/to/completed_gpu_run \
+  /absolute/path/to/pilot_data.npz \
+  /absolute/path/to/schema.json
+```
+
+The helper requires the original input hashes, a compatible one-replicate GPU
+plan, and all 15 exact `ARM_generation_NN.npz` filenames. Each file must have
+`X_synthetic` with 512 rows and seven columns, the exact `features` order, and
+the original `categories`. Nonfinite values and invalid categorical indices
+fail validation; finite generated AGE tails are retained for diagnosis.
+
+The manifest's shared `fit_id` identifies the historical matched experiment
+block, not a common checkpoint for all arms. C reuses B; E has its own fitted
+model. C alone receives the cached-target identifier, and draw IDs follow the
+original plan's generation-seed order. Generations remain nested observations
+from one training replicate per trained arm.
+
+Outputs are created under `pipeline_runs/diffusion_diagnostics_JOBID/`. A
+successful job verifies 15 samples, six matched C-versus-B/E comparisons, no
+unmatched comparisons, and unchanged sample hashes between preparation and
+evaluation. It writes `COMPLETED.txt` only after these checks and creation of
+`aggregate_reports.tar.gz`. Failures produce `FAILED.txt` when the shell can
+run its exit trap; never interpret partial outputs as a completed run.
+
+The archive includes the sample manifest, completion-check summary, and the
+aggregate JSON/CSV/text reports. It contains no sample arrays, checkpoints,
+or target vectors. These exact reference counts remain local nonprivate
+research outputs. Download the archive through the same approved file-transfer
+route used for the baseline reports.
+
+This job does not train, sample a model, create a target, or refit AIM/MST.
+AGE-only permutations and frozen-model guidance interventions are separate
+proposed follow-ups; this launcher runs the existing diagnostic evaluator.
+
 ## Interpretation and the next replication stage
 
 The new baseline fits provide real-data evidence, but the recorded GPU study

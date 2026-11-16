@@ -15,6 +15,7 @@ tabdiff/result/
 **/ckpt/*
 .DS_Store
 .venv/
+.venv-pgm/
 __pycache__/
 .env
 .env.*

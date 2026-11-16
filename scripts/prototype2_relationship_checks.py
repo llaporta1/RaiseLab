@@ -21,7 +21,7 @@ import json
 
 import numpy as np
 
-import run_ipums_ab_pilot as ab
+import prototype2_evaluation as ab
 
 
 # Fixed BEFORE evaluation: no pair selection from observed metric values.

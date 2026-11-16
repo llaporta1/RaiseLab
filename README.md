@@ -1,5 +1,14 @@
 # TabDiff: a Mixed-type Diffusion Model for Tabular Data Generation
 
+## RAISE Lab Prototype 2 experiments
+
+The research-specific CPU scripts are in `scripts/`. For AGE and pairwise
+diagnostics and the AIM + Private-PGM / MST + Private-PGM comparisons, see
+[the experiment guide](docs/prototype2_diagnostics_baselines.md).
+Prepared IPUMS data, saved models, generated samples, and research reports stay
+in local ignored directories; they are not included in this source repository.
+
+
 <p align="center">
   <a href="https://github.com/MinkaiXu/TabDiff/blob/main/LICENSE">
     <img alt="MIT License" src="https://img.shields.io/badge/License-MIT-yellow.svg">

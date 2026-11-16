@@ -299,6 +299,27 @@ software execution and metric accounting only; they do not answer which
 method performs best on the research data or establish the causes of the
 original AGE/RACE × HISPAN/OCC × IND observations.
 
+### Dependency isolation follow-up
+
+The initial validation environment allowed access to system-installed
+packages. It therefore did not verify that the requirements file was complete:
+the upstream accounting helper imports Matplotlib, which was already present
+in that environment but absent from the first Rivanna installation.
+
+Matplotlib 3.10.8 is now an explicit requirement, its version is recorded in
+baseline provenance, and the cluster launcher selects the noninteractive
+`Agg` backend. A new environment with system-site packages disabled, user-site
+imports disabled, and no inherited `PYTHONPATH` passed backend initialization,
+all 47 tests and 15 subtests, and `pip check`. Imported third-party package
+origins were verified to stay inside that environment or the pinned editable
+MBI checkout.
+
+The actual AIM and MST fixture workflow also completed in that clean
+environment: one fit per arm, two 64-row draws per fit, four saved arrays,
+`status: complete`, and explicit public-fixture labels. This verifies the
+corrected dependency installation; it remains generated-data software
+validation rather than a real IPUMS comparison or a completed Rivanna run.
+
 ## Sources and provenance
 
 - [AIM paper](https://arxiv.org/abs/2201.12677)

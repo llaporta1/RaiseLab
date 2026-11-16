@@ -284,7 +284,7 @@ class OfficialPGMBackend:
         if not {"rows", "method"}.issubset(inspect.signature(self.mbi.MarkovRandomField.synthetic_data).parameters):
             raise RuntimeError("The backend must expose explicit i.i.d. synthetic sampling")
         versions = {}
-        for name in ("mbi", "attrs", "numpy", "scipy", "networkx", "jax", "jaxlib", "pandas", "chex", "optax"):
+        for name in ("mbi", "attrs", "numpy", "scipy", "networkx", "jax", "jaxlib", "pandas", "matplotlib", "chex", "optax"):
             versions[name] = importlib.metadata.version(name)
         self.provenance.update({
             "mbi_import_path": str(Path(self.mbi.__file__).resolve()),

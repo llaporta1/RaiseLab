@@ -90,6 +90,12 @@ The exact upstream source and dependencies are pinned; the adapter checks the
 import location and source commit before fitting. Do not substitute an
 unrelated `private_pgm` package or the old baseline stubs.
 
+The pinned `mechanisms/cdp2adp.py` imports Matplotlib even though the baseline
+does not draw a plot. `requirements-pgm.txt` therefore includes Matplotlib
+explicitly, and the launcher selects its noninteractive `Agg` backend. A
+successful `pip check` verifies declared dependencies; it cannot catch an
+undeclared import in an upstream mechanism script.
+
 ## 4. Verify execution on Rivanna using invented records
 
 Still inside the allocated compute shell, run the validation mode directly:
@@ -110,6 +116,31 @@ through the same diagnostics. A successful run ends with `COMPLETED.txt`.
 `FAILED.txt` means the workflow did not finish. The launcher refuses to
 overwrite a directory from a previous attempt; inspect the failure before
 starting a different job.
+
+### Retry a failed public validation after a dependency correction
+
+Pull the correction and install the updated requirements in the prepared
+environment. If retrying within the same interactive allocation, preserve the
+failed public-fixture directory under a different name first. The following
+only moves an output with a failure marker and no completion marker, and
+refuses to overwrite the archive:
+
+```bash
+git pull --ff-only
+.venv-pgm/bin/python -m pip install -r requirements-pgm.txt
+.venv-pgm/bin/python -m pip check
+
+FAILED_VALIDATION="pipeline_runs/pgm_validate_${SLURM_JOB_ID}"
+if [ -f "$FAILED_VALIDATION/FAILED.txt" ] &&
+   [ ! -e "$FAILED_VALIDATION/COMPLETED.txt" ]; then
+  mv -T -n "$FAILED_VALIDATION" "${FAILED_VALIDATION}_failed_dependency"
+fi
+bash slurm/prototype2_pgm.sbatch validate
+```
+
+This starts a fresh generated-fixture validation; it does not resume a research
+fit. Do not change `SLURM_JOB_ID` or remove failure markers. Research comparison
+failures require inspecting which fits completed before deciding on any rerun.
 
 ## 5. Verify the original research inputs
 

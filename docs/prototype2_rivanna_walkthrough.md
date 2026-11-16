@@ -338,8 +338,21 @@ research outputs. Download the archive through the same approved file-transfer
 route used for the baseline reports.
 
 This job does not train, sample a model, create a target, or refit AIM/MST.
-AGE-only permutations and frozen-model guidance interventions are separate
-proposed follow-ups; this launcher runs the existing diagnostic evaluator.
+AGE-only permutations and frozen-model guidance interventions use separate
+launchers; this launcher runs the existing diagnostic evaluator. See
+[saved-output CPU follow-up](prototype2_saved_followup.md) for AGE-only
+permutations and the retained-target audit.
+
+## Replay the historical GPU sampler and vary guidance
+
+The [frozen-B guidance walkthrough](prototype2_guidance_sweep.md) gives the
+source preflight, disconnect-safe submission receipt, and monitoring commands
+for `slurm/prototype2_guidance_sweep.sbatch`. It uses the original GPU
+environment and checks all three saved B and C draws before the fixed
+guidance-strength and active-feature grid. Both the model and retained target
+stay fixed. A separately selected TRAIN-oracle condition is explicitly
+nonprivate. Local software tests do not establish successful historical CUDA
+replay; that remains the first gate inside the Rivanna job.
 
 ## Interpretation and the next replication stage
 

@@ -104,6 +104,6 @@ tar -czf "$RUN_OUT/aggregate_reports.tar.gz" -C "$RUN_OUT" \
     diagnostics/diagnostics.json diagnostics/metrics_per_draw.csv \
     diagnostics/age_bin_contributions.csv diagnostics/pair_cell_errors.csv \
     diagnostics/matched_cell_changes.csv diagnostics/real_real_controls.csv \
-    diagnostics/summary.txt
+    diagnostics/README.txt
 printf 'COMPLETED: diagnostic-only job=%s\n' "$SLURM_JOB_ID" > "$RUN_OUT/COMPLETED.txt"
 printf 'Completed diagnostics. Aggregate report archive: %s/aggregate_reports.tar.gz\n' "$RUN_OUT"

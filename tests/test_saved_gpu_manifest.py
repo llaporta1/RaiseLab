@@ -8,8 +8,12 @@ record, checkpoint, or private target is included in this test module.
 from collections import Counter
 import hashlib
 import json
+import os
 from pathlib import Path
+import shutil
+import subprocess
 import sys
+import tarfile
 from types import SimpleNamespace
 from unittest.mock import Mock
 
@@ -313,3 +317,32 @@ def test_generated_manifest_runs_existing_diagnostics_end_to_end(saved_run):
     assert report["declared_public_fixture"] is True
     assert not list(args.out.glob("*.npy"))
     assert not list(args.out.glob("*.npz"))
+
+    # Execute the launcher's actual postchecks and archive commands against
+    # these generated reports. Testing only the Python evaluator missed a
+    # stale summary.txt name in the shell archive list; the runner emits
+    # README.txt. Keep the shell and evaluator contract covered together.
+    launcher = (SCRIPTS.parent / "slurm/prototype2_saved_gpu_diagnostics.sbatch").read_text()
+    start = '"$DIAG_PYTHON" - "$RUN_OUT" <<\'PY\'\n'
+    assert launcher.count(start) == 1
+    postchecks_and_archive = start + launcher.split(start, 1)[1]
+    shutil.copyfile(saved_run.out, saved_run.out.parent / "samples_manifest.json")
+    subprocess.run(
+        ["bash", "-euc", postchecks_and_archive], check=True,
+        env={**os.environ, "DIAG_PYTHON": sys.executable,
+             "RUN_OUT": str(saved_run.out.parent), "SLURM_JOB_ID": "999000"},
+        capture_output=True, text=True,
+    )
+    archive_path = saved_run.out.parent / "aggregate_reports.tar.gz"
+    expected_members = {
+        "samples_manifest.json", "completion_summary.json",
+        "diagnostics/diagnostics.json", "diagnostics/metrics_per_draw.csv",
+        "diagnostics/age_bin_contributions.csv", "diagnostics/pair_cell_errors.csv",
+        "diagnostics/matched_cell_changes.csv", "diagnostics/real_real_controls.csv",
+        "diagnostics/README.txt",
+    }
+    with tarfile.open(archive_path, "r:gz") as archive:
+        assert set(archive.getnames()) == expected_members
+        assert all(member.isfile() for member in archive.getmembers())
+        assert b"SOFTWARE VALIDATION ONLY" in archive.extractfile("diagnostics/README.txt").read()
+    assert (saved_run.out.parent / "COMPLETED.txt").is_file()
